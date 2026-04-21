@@ -123,13 +123,16 @@ public:
     string send_status(int y, int m, int d) override {
         date q(y, m, d);
         if (q < send_date) return "mail not send";
+        // Exact arrival at a station
+        for (int i = 0; i < len; ++i) {
+            if (q == station_time[i]) return string("arrive ") + station_name[i];
+        }
         if (len == 0) {
-            if (q < arrive_date) return "on the way";
-            return "already arrive";
+            return (q < arrive_date) ? string("depart ") + string("") : string("already arrive");
         }
         if (q < station_time[0]) return string("arrive ") + station_name[0];
         for (int i = 0; i < len - 1; ++i) {
-            if (q < station_time[i + 1]) return string("depart ") + station_name[i];
+            if (station_time[i] < q && q < station_time[i + 1]) return string("depart ") + station_name[i];
         }
         if (q < arrive_date) return string("depart ") + station_name[len - 1];
         return "already arrive";
